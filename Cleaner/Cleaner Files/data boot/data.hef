@@ -1,0 +1,30 @@
+tion Explicit
+
+Sub OpenNotepadWithTempFileWithClipboardContent()
+
+    Dim rngData As Range
+    Dim strData As String
+    Dim strTempFile As String
+
+    ' copy some range values
+    Set rngData = Sheet3.Range("B1:B5")
+    rngData.Copy
+
+    ' get the clipboard data
+    ' magic code for is for early binding to MSForms.DataObject
+    With CreateObject("New:{1C3B4210-F441-11CE-B9EA-00AA006B1A69}")
+        .GetFromClipBoard
+        strData = .GetText
+    End With
+
+    ' write to temp file
+    strTempFile = "D:\temp.txt"
+    With CreateObject("Scripting.FileSystemObject")
+        ' true to overwrite existing temp file
+        .CreateTextFile(strTempFile, True).Write strData
+    End With
+
+    ' open notepad with tempfile
+    Shell "cmd /c ""notepad.exe """ & strTempFile & """", vbHide
+
+End Sub
